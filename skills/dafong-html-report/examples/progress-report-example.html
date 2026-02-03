@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q1 廢車回收量報告</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+      background: #1e4a6e;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ========== 封面卡片 ========== */
+    .cover-card {
+      border-radius: 16px;
+      padding: 48px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      min-height: 280px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(30, 74, 110, 0.95) 0%, rgba(45, 90, 126, 0.9) 100%);
+    }
+    .cover-logo {
+      height: 60px;
+      width: auto;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+    }
+    .cover-text h1 {
+      color: #ffffff;
+      font-size: 42px;
+      font-weight: bold;
+      letter-spacing: 6px;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    }
+    .cover-text .subtitle {
+      color: rgba(255,255,255,0.9);
+      font-size: 18px;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+    }
+
+    /* ========== 內容卡片 ========== */
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .card-header {
+      background: #1e4a6e;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .card-header-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(76, 175, 80, 0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .card-header h2 {
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: bold;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .card-body {
+      padding: 24px;
+    }
+
+    /* ========== 強調區塊 ========== */
+    .highlight-card {
+      background: linear-gradient(135deg, #4caf50, #2e7d32);
+      color: white;
+      padding: 24px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .highlight-icon {
+      width: 72px;
+      height: 72px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+    }
+    .highlight-text h3 {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 4px;
+    }
+    .highlight-text p {
+      font-size: 28px;
+      font-weight: bold;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* ========== 圓餅圖 ========== */
+    .chart-section {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .pie-chart {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      /* 佔比: 廢鐵 45%=162deg, 塑料 25%=90deg, 玻璃 15%=54deg, 其他 15%=54deg */
+      background: conic-gradient(
+        #1e4a6e 0deg 162deg,
+        #4caf50 162deg 252deg,
+        #2e7d32 252deg 306deg,
+        #81c784 306deg 360deg
+      );
+      position: relative;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .pie-chart::after {
+      content: "1,250 台";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90px;
+      height: 90px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      color: #1e4a6e;
+      text-align: center;
+    }
+    .chart-legend {
+      flex: 1;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding: 12px 16px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+    }
+    .legend-text {
+      flex: 1;
+      font-weight: 500;
+      color: #1e4a6e;
+    }
+    .legend-value {
+      font-weight: bold;
+      color: #1e4a6e;
+    }
+
+    /* ========== 表格 ========== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 14px 16px;
+      text-align: center;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    th {
+      background: #f5f5f5;
+      color: #1e4a6e;
+      font-weight: 600;
+    }
+    td {
+      color: #1e4a6e;
+      font-weight: 500;
+    }
+    tr:hover {
+      background: #f9f9f9;
+    }
+
+    /* ========== 標籤 ========== */
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .badge-success { background: #4caf50; }
+    .badge-warning { background: #ff9800; }
+    .badge-danger { background: #f44336; }
+
+    /* ========== 清單 ========== */
+    .issue-list {
+      list-style: none;
+      padding: 0;
+    }
+    .issue-list li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      border-left: 4px solid #ff9800;
+    }
+    .issue-list li.resolved {
+      border-left-color: #4caf50;
+    }
+    .issue-icon {
+      font-size: 20px;
+    }
+    .issue-content {
+      flex: 1;
+    }
+    .issue-title {
+      font-weight: 600;
+      color: #1e4a6e;
+      margin-bottom: 4px;
+    }
+    .issue-desc {
+      font-size: 13px;
+      color: #666;
+    }
+
+    /* ========== 時間軸 ========== */
+    .timeline {
+      position: relative;
+      padding: 20px 0;
+    }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 44px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #1e4a6e, #4caf50, #2e7d32);
+      border-radius: 2px;
+    }
+    .stages {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+    }
+    .stage {
+      flex: 1;
+      text-align: center;
+      padding: 0 8px;
+    }
+    .stage-dot {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #1e4a6e, #2d5a7e);
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(30, 74, 110, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+    .stage-content {
+      background: white;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .stage-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: #1e4a6e;
+    }
+    .stage-desc {
+      font-size: 12px;
+      color: #1e4a6e;
+      margin-top: 4px;
+    }
+
+    /* ========== 底部綠線 ========== */
+    .green-line {
+      height: 4px;
+      background: linear-gradient(90deg, #4caf50, #2e7d32);
+    }
+
+    /* ========== 頁尾 ========== */
+    .footer {
+      text-align: center;
+      color: rgba(255,255,255,0.6);
+      font-size: 12px;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- ==================== S: 背景（封面） ==================== -->
+    <div class="cover-card">
+      <img src="../resources/ppt_logo.png" alt="大豐環保" class="cover-logo">
+      <div class="cover-text">
+        <h1>Q1 廢車回收量報告</h1>
+        <p class="subtitle">2026 年第一季營運成果彙報</p>
+      </div>
+    </div>
+
+    <!-- ==================== 重點成果 ==================== -->
+    <div class="highlight-card">
+      <div class="highlight-icon">🎯</div>
+      <div class="highlight-text">
+        <h3>本季達成率</h3>
+        <p>目標達成 112%</p>
+      </div>
+    </div>
+
+    <!-- ==================== A1: 數據總覽 ==================== -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">📊</div>
+        <h2>回收量統計</h2>
+      </div>
+      <div class="card-body">
+        <div class="chart-section">
+          <div class="pie-chart"></div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background: #1e4a6e;"></div>
+              <span class="legend-text">廢鐵</span>
+              <span class="legend-value">45%</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #4caf50;"></div>
+              <span class="legend-text">塑料</span>
+              <span class="legend-value">25%</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #2e7d32;"></div>
+              <span class="legend-text">玻璃</span>
+              <span class="legend-value">15%</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #81c784;"></div>
+              <span class="legend-text">其他</span>
+              <span class="legend-value">15%</span>
+            </div>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>月份</th>
+              <th>目標</th>
+              <th>實際</th>
+              <th>達成率</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1 月</td>
+              <td>400 台</td>
+              <td>380 台</td>
+              <td><span class="badge badge-warning">95%</span></td>
+            </tr>
+            <tr>
+              <td>2 月</td>
+              <td>350 台</td>
+              <td>420 台</td>
+              <td><span class="badge badge-success">120%</span></td>
+            </tr>
+            <tr>
+              <td>3 月</td>
+              <td>370 台</td>
+              <td>450 台</td>
+              <td><span class="badge badge-success">122%</span></td>
+            </tr>
+            <tr>
+              <td><strong>Q1 合計</strong></td>
+              <td><strong>1,120 台</strong></td>
+              <td><strong>1,250 台</strong></td>
+              <td><span class="badge badge-success">112%</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="green-line"></div>
+    </div>
+
+    <!-- ==================== A2: 待解決問題 ==================== -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">⚠️</div>
+        <h2>待解決問題</h2>
+      </div>
+      <div class="card-body">
+        <ul class="issue-list">
+          <li>
+            <span class="issue-icon">🔧</span>
+            <div class="issue-content">
+              <div class="issue-title">壓縮機設備老化</div>
+              <div class="issue-desc">A 廠區壓縮機效率下降 15%，需評估更換</div>
+            </div>
+            <span class="badge badge-warning">進行中</span>
+          </li>
+          <li>
+            <span class="issue-icon">👥</span>
+            <div class="issue-content">
+              <div class="issue-title">人力短缺</div>
+              <div class="issue-desc">旺季期間需增加 2 名臨時人力</div>
+            </div>
+            <span class="badge badge-warning">待處理</span>
+          </li>
+          <li class="resolved">
+            <span class="issue-icon">✅</span>
+            <div class="issue-content">
+              <div class="issue-title">系統升級</div>
+              <div class="issue-desc">ERP 系統已於 3/15 完成升級</div>
+            </div>
+            <span class="badge badge-success">已解決</span>
+          </li>
+        </ul>
+      </div>
+      <div class="green-line"></div>
+    </div>
+
+    <!-- ==================== A3: 下季計畫 ==================== -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">📅</div>
+        <h2>Q2 計畫</h2>
+      </div>
+      <div class="card-body">
+        <div class="timeline">
+          <div class="stages">
+            <div class="stage">
+              <div class="stage-dot">4月</div>
+              <div class="stage-content">
+                <div class="stage-title">設備評估</div>
+                <div class="stage-desc">壓縮機更換評估</div>
+              </div>
+            </div>
+            <div class="stage">
+              <div class="stage-dot">5月</div>
+              <div class="stage-content">
+                <div class="stage-title">人力補充</div>
+                <div class="stage-desc">招募臨時人員</div>
+              </div>
+            </div>
+            <div class="stage">
+              <div class="stage-dot">6月</div>
+              <div class="stage-content">
+                <div class="stage-title">目標衝刺</div>
+                <div class="stage-desc">季末達成目標</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="green-line"></div>
+    </div>
+
+    <p class="footer">大豐環保 © 2026 | Q1 廢車回收量報告</p>
+  </div>
+</body>
+</html>

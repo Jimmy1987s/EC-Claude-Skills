@@ -1,0 +1,33 @@
+{
+  "name": "claude-notifier",
+  "displayName": "Claude Code Notifier",
+  "description": "顯示 Claude Code 任務完成通知，點擊可跳到對話",
+  "version": "1.0.0",
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onUri"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "claude-notifier.showNotification",
+        "title": "Show Claude Notification"
+      }
+    ]
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

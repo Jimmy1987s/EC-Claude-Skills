@@ -1,11 +1,13 @@
 **關鍵：您必須按順序完成這些步驟。不要跳過直接編寫程式碼。**
 
-如果您需要填寫 PDF 表單，首先檢查 PDF 是否有可填寫的表單欄位。從此檔案的目錄執行此腳本：
-`python scripts/check_fillable_fields <file.pdf>`，根據結果前往「可填寫欄位」或「不可填寫欄位」部分並遵循相應說明。
+如果您需要填寫 PDF 表單，首先檢查 PDF 是否有可填寫的表單欄位。執行此腳本：
+`python "~/.claude/skills/document-pdf/scripts/check_fillable_fields.py" <file.pdf>`，根據結果前往「可填寫欄位」或「不可填寫欄位」部分並遵循相應說明。
+
+> **注意**：`~` 代表使用者的 home 目錄，Claude 執行時會自動展開為實際路徑。
 
 # 可填寫欄位
 如果 PDF 有可填寫的表單欄位：
-- 從此檔案的目錄執行此腳本：`python scripts/extract_form_field_info.py <input.pdf> <field_info.json>`。它會建立一個 JSON 檔案，包含此格式的欄位清單：
+- 執行此腳本：`python "~/.claude/skills/document-pdf/scripts/extract_form_field_info.py" <input.pdf> <field_info.json>`。它會建立一個 JSON 檔案，包含此格式的欄位清單：
 ```
 [
   {
@@ -50,8 +52,8 @@
   }
 ]
 ```
-- 使用此腳本將 PDF 轉換為 PNG（每頁一張圖片）（從此檔案的目錄執行）：
-`python scripts/convert_pdf_to_images.py <file.pdf> <output_directory>`
+- 使用此腳本將 PDF 轉換為 PNG（每頁一張圖片）：
+`python "~/.claude/skills/document-pdf/scripts/convert_pdf_to_images.py" <file.pdf> <output_directory>`
 然後分析圖片以確定每個表單欄位的用途（確保將邊界框 PDF 座標轉換為圖片座標）。
 - 建立一個 `field_values.json` 檔案，使用此格式包含每個欄位要輸入的值：
 ```
@@ -71,8 +73,8 @@
   // 更多欄位
 ]
 ```
-- 從此檔案的目錄執行 `fill_fillable_fields.py` 腳本以建立已填寫的 PDF：
-`python scripts/fill_fillable_fields.py <input pdf> <field_values.json> <output pdf>`
+- 執行 `fill_fillable_fields.py` 腳本以建立已填寫的 PDF：
+`python "~/.claude/skills/document-pdf/scripts/fill_fillable_fields.py" <input pdf> <field_values.json> <output pdf>`
 此腳本會驗證您提供的欄位 ID 和值是否有效；如果印出錯誤訊息，請更正相應的欄位並重試。
 
 # 不可填寫欄位
@@ -83,8 +85,8 @@
 - 使用邊界框填寫表單。
 
 ## 步驟 1：視覺分析（必要）
-- 將 PDF 轉換為 PNG 圖片。從此檔案的目錄執行此腳本：
-`python scripts/convert_pdf_to_images.py <file.pdf> <output_directory>`
+- 將 PDF 轉換為 PNG 圖片。執行此腳本：
+`python "~/.claude/skills/document-pdf/scripts/convert_pdf_to_images.py" <file.pdf> <output_directory>`
 腳本會為 PDF 中的每一頁建立一張 PNG 圖片。
 - 仔細檢查每張 PNG 圖片並識別所有表單欄位和使用者應該輸入資料的區域。對於使用者應該輸入文字的每個表單欄位，確定表單欄位標籤和使用者應該輸入文字的區域的邊界框。標籤和輸入邊界框必須不相交；文字輸入框應該只包含應該輸入資料的區域。通常這個區域會緊鄰標籤的旁邊、上方或下方。輸入邊界框必須足夠高和寬以容納其文字。
 
@@ -176,15 +178,15 @@ ________________________________________________
 }
 ```
 
-從此檔案的目錄為每一頁執行此腳本以建立驗證圖片：
-`python scripts/create_validation_image.py <page_number> <path_to_fields.json> <input_image_path> <output_image_path>
+為每一頁執行此腳本以建立驗證圖片：
+`python "~/.claude/skills/document-pdf/scripts/create_validation_image.py" <page_number> <path_to_fields.json> <input_image_path> <output_image_path>
 
 驗證圖片會在應該輸入文字的地方有紅色矩形，在標籤文字上有藍色矩形。
 
 ### 步驟 3：驗證邊界框（必要）
 #### 自動相交檢查
-- 透過使用 `check_bounding_boxes.py` 腳本檢查 fields.json 檔案，驗證沒有邊界框相交且輸入邊界框足夠高（從此檔案的目錄執行）：
-`python scripts/check_bounding_boxes.py <JSON file>`
+- 透過使用 `check_bounding_boxes.py` 腳本檢查 fields.json 檔案，驗證沒有邊界框相交且輸入邊界框足夠高：
+`python "~/.claude/skills/document-pdf/scripts/check_bounding_boxes.py" <JSON file>`
 
 如果有錯誤，重新分析相關欄位，調整邊界框，並反覆修正直到沒有剩餘錯誤。記住：標籤（藍色）邊界框應該包含文字標籤，輸入（紅色）框不應該包含。
 
@@ -201,5 +203,5 @@ ________________________________________________
 
 
 ### 步驟 4：將註解新增到 PDF
-從此檔案的目錄執行此腳本，使用 fields.json 中的資訊建立已填寫的 PDF：
-`python scripts/fill_pdf_form_with_annotations.py <input_pdf_path> <path_to_fields.json> <output_pdf_path>
+執行此腳本，使用 fields.json 中的資訊建立已填寫的 PDF：
+`python "~/.claude/skills/document-pdf/scripts/fill_pdf_form_with_annotations.py" <input_pdf_path> <path_to_fields.json> <output_pdf_path>

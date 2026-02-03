@@ -84,27 +84,55 @@ prompt: "從搜尋結果提取技能列表，包含：名稱、描述、來源�
 
 ### 階段 5：下載與安裝
 
-1. **取得原始 Markdown**
-   - WebFetch 詳情頁
-   - 提取 skillMdRaw 欄位（原始 Markdown 內容）
+1. **探索 GitHub 倉庫結構**
+   - 使用 `gh api repos/{owner}/{repo}/contents/.claude/skills/{skill-name}` 列出目錄結構
+   - 檢查是否有子資料夾（如 `data/`、`scripts/`、`templates/` 等）
+   - 記錄所有需要下載的檔案和資料夾
 
-2. **翻譯成繁體中文**
+2. **下載完整技能結構**
+   - 建立本地目錄：`mkdir -p ~/.claude/skills/{skill-name}`
+   - 下載 SKILL.md：`curl -s "https://raw.githubusercontent.com/{owner}/{repo}/main/.claude/skills/{skill-name}/SKILL.md"`
+   - **遞迴下載子資料夾**：
+     ```bash
+     # 對每個子資料夾
+     gh api repos/{owner}/{repo}/contents/.claude/skills/{skill-name}/{subfolder} --jq '.[].name'
+
+     # 建立本地子資料夾
+     mkdir -p ~/.claude/skills/{skill-name}/{subfolder}
+
+     # 下載該資料夾內所有檔案
+     curl -s "https://raw.githubusercontent.com/{owner}/{repo}/main/.claude/skills/{skill-name}/{subfolder}/{filename}" \
+       -o ~/.claude/skills/{skill-name}/{subfolder}/{filename}
+     ```
+
+3. **翻譯 SKILL.md 成繁體中文**
    - 保留 YAML frontmatter 格式
    - 翻譯所有說明文字
    - 保留程式碼區塊不翻譯
+   - **不翻譯** data/scripts 等資料檔案
 
-3. **寫入檔案**
+4. **寫入檔案**
    ```
    Write 工具
    路徑：~/.claude/skills/{skill-name}/SKILL.md
    內容：翻譯後的 Markdown
    ```
 
-4. **回報結果**
+5. **驗證安裝完整性**
+   - 執行 `ls -la ~/.claude/skills/{skill-name}/` 確認結構
+   - 比對 GitHub 目錄，確保沒有遺漏
+
+6. **回報結果**
    「✅ 已安裝 **{skill-name}**！
 
    使用方式：`/{skill-name}`
-   檔案位置：`~/.claude/skills/{skill-name}/SKILL.md`」
+   檔案位置：`~/.claude/skills/{skill-name}/`
+
+   包含檔案：
+   - SKILL.md
+   - data/ (X 個檔案)
+   - scripts/ (X 個檔案)
+   」
 
 ### 階段 6：更新索引
 

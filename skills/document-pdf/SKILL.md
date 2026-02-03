@@ -2,9 +2,13 @@
 name: pdf
 description: 全面的 PDF 操作工具包，用於擷取文字和表格、建立新 PDF、合併/分割文件，以及處理表單。當 Claude 需要填寫 PDF 表單或以程式化方式處理、產生或大規模分析 PDF 文件時使用。
 license: Proprietary. LICENSE.txt has complete terms
+skill_base_dir: ~/.claude/skills/document-pdf
 ---
 
 # PDF 處理指南
+
+> **Skill 目錄**：本 skill 的所有腳本和參考文件位於 `~/.claude/skills/document-pdf/`。
+> 執行腳本時請使用該目錄下的 `scripts/` 子目錄。
 
 ## 概述
 
@@ -137,6 +141,45 @@ c.line(100, height - 140, 400, height - 140)
 
 # 儲存
 c.save()
+```
+
+#### 建立表格（含自動換行）
+> **重要**：表格儲存格必須使用 `Paragraph` 包裝文字，否則不會自動換行，長文字會被截斷或溢出。
+
+```python
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib import colors
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
+# 註冊中文字型（Windows）
+pdfmetrics.registerFont(TTFont('MicrosoftJhengHei', 'C:/Windows/Fonts/msjh.ttc'))
+
+# 建立樣式
+cell_style = ParagraphStyle('Cell_CN', fontName='MicrosoftJhengHei', fontSize=9, leading=14)
+header_style = ParagraphStyle('Header_CN', fontName='MicrosoftJhengHei', fontSize=9, leading=14, textColor=colors.white)
+
+# 包裝函式 - 關鍵！
+def wrap(text, style=cell_style):
+    return Paragraph(text, style)
+
+# 表格資料 - 使用 Paragraph 包裝才能自動換行
+data = [
+    [wrap('標題1', header_style), wrap('標題2', header_style)],
+    [wrap('短文字'), wrap('這是一段很長的文字，會根據欄寬自動換行顯示')],
+]
+
+# 建立表格並設定欄寬
+table = Table(data, colWidths=[100, 200])
+table.setStyle(TableStyle([
+    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#4472C4')),
+    ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#DDDDDD')),
+    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ('TOPPADDING', (0, 0), (-1, -1), 8),
+    ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+]))
 ```
 
 #### 建立多頁 PDF
@@ -288,7 +331,7 @@ with open("encrypted.pdf", "wb") as output:
 
 ## 下一步
 
-- 如需進階 pypdfium2 用法，請參閱 reference.md
-- 如需 JavaScript 函式庫（pdf-lib），請參閱 reference.md
-- 如果需要填寫 PDF 表單，請遵循 forms.md 中的說明
-- 如需疑難排解指南，請參閱 reference.md
+- 如需進階 pypdfium2 用法，請參閱 `~/.claude/skills/document-pdf/reference.md`
+- 如需 JavaScript 函式庫（pdf-lib），請參閱 `~/.claude/skills/document-pdf/reference.md`
+- 如果需要填寫 PDF 表單，請遵循 `~/.claude/skills/document-pdf/forms.md` 中的說明
+- 如需疑難排解指南，請參閱 `~/.claude/skills/document-pdf/reference.md`

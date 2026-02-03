@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>廢車拍照系統操作手冊</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+      background: #1e4a6e;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ========== 封面卡片 ========== */
+    .cover-card {
+      border-radius: 16px;
+      padding: 48px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      min-height: 280px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(30, 74, 110, 0.95) 0%, rgba(45, 90, 126, 0.9) 100%);
+    }
+    .cover-logo {
+      height: 60px;
+      width: auto;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+    }
+    .cover-text h1 {
+      color: #ffffff;
+      font-size: 36px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    }
+    .cover-text .subtitle {
+      color: rgba(255,255,255,0.9);
+      font-size: 18px;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+    }
+
+    /* ========== 內容卡片 ========== */
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .card-header {
+      background: #1e4a6e;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .card-header-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(76, 175, 80, 0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .card-header h2 {
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: bold;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .card-body {
+      padding: 24px;
+    }
+
+    /* ========== 說明文字 ========== */
+    .intro-text {
+      color: #1e4a6e;
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+    .intro-text strong {
+      color: #2e7d32;
+    }
+
+    /* ========== 系統概述圖示 ========== */
+    .system-overview {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      padding: 24px;
+      background: #f8f9fa;
+      border-radius: 12px;
+    }
+    .system-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      flex-shrink: 0;
+    }
+    .system-desc {
+      flex: 1;
+    }
+    .system-desc h3 {
+      color: #1e4a6e;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .system-desc p {
+      color: #1e4a6e;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ========== 流程圖 ========== */
+    .flow-section {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .flow-title {
+      text-align: center;
+      color: #1e4a6e;
+      margin-bottom: 20px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .flow-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .flow-step {
+      text-align: center;
+      padding: 16px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      min-width: 100px;
+      position: relative;
+    }
+    .flow-step::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #4caf50, #2e7d32);
+      border-radius: 12px 12px 0 0;
+    }
+    .flow-number {
+      width: 28px;
+      height: 28px;
+      background: #1e4a6e;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      margin: 0 auto 8px;
+    }
+    .flow-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .flow-label {
+      font-size: 13px;
+      color: #1e4a6e;
+      font-weight: 600;
+    }
+    .flow-arrow {
+      font-size: 20px;
+      color: #4caf50;
+      font-weight: bold;
+    }
+
+    /* ========== 操作步驟詳解 ========== */
+    .step-detail {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      border-left: 4px solid #4caf50;
+    }
+    .step-number-box {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #1e4a6e, #2d5a7e);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .step-content {
+      flex: 1;
+    }
+    .step-content h4 {
+      color: #1e4a6e;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .step-content p {
+      color: #1e4a6e;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .step-content code {
+      background: #e8f5e9;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: #2e7d32;
+    }
+
+    /* ========== 截圖展示 ========== */
+    .screenshot-box {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .screenshot-placeholder {
+      background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
+      border-radius: 8px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 14px;
+      border: 2px dashed #ccc;
+      margin-bottom: 12px;
+    }
+    .screenshot-caption {
+      text-align: center;
+      color: #1e4a6e;
+      font-size: 13px;
+    }
+
+    /* ========== 注意事項清單 ========== */
+    .notice-list {
+      list-style: none;
+      padding: 0;
+    }
+    .notice-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .notice-list li.warning {
+      border-left: 4px solid #ff9800;
+      background: #fff8e1;
+    }
+    .notice-list li.danger {
+      border-left: 4px solid #f44336;
+      background: #ffebee;
+    }
+    .notice-list li.tip {
+      border-left: 4px solid #4caf50;
+      background: #e8f5e9;
+    }
+    .notice-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .notice-content {
+      flex: 1;
+    }
+    .notice-title {
+      font-weight: 600;
+      color: #1e4a6e;
+      margin-bottom: 4px;
+    }
+    .notice-desc {
+      font-size: 13px;
+      color: #666;
+    }
+
+    /* ========== 快捷鍵表格 ========== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    th {
+      background: #f5f5f5;
+      color: #1e4a6e;
+      font-weight: 600;
+    }
+    td {
+      color: #1e4a6e;
+      font-weight: 500;
+    }
+    tr:hover {
+      background: #f9f9f9;
+    }
+    kbd {
+      background: #1e4a6e;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 13px;
+    }
+
+    /* ========== 底部綠線 ========== */
+    .green-line {
+      height: 4px;
+      background: linear-gradient(90deg, #4caf50, #2e7d32);
+    }
+
+    /* ========== 頁尾 ========== */
+    .footer {
+      text-align: center;
+      color: rgba(255,255,255,0.6);
+      font-size: 12px;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- ==================== S: 背景（封面） ==================== -->
+    <div class="cover-card">
+      <img src="../resources/ppt_logo.png" alt="大豐環保" class="cover-logo">
+      <div class="cover-text">
+        <h1>廢車拍照系統操作手冊</h1>
+        <p class="subtitle">新進人員教育訓練教材 v1.0</p>
+      </div>
+    </div>
+
+    <!-- ==================== A1: 系統概述 ==================== -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">📚</div>
+        <h2>系統概述</h2>
+      </div>
+      <div class="card-body">
+        <p class="intro-text">
+          廢車拍照系統是大豐環保的核心作業工具，用於記錄每台進廠廢車的外觀狀態。
+          系統會自動將照片上傳至雲端，並透過 <strong>AI 辨識</strong> 初步分類車輛零件，
+          協助後續拆解作業規劃。
+        </p>
+
+        <div class="system-overview">
+          <div class="system-icon">📸</div>
+          <div class="system-desc">
+            <h3>主要功能</h3>
+            <p>
+              • 多角度拍照（前、後、左、右、車頂、引擎室）<br>
+              • 自動上傳至雲端儲存<br>
+              • AI 零件辨識與標記<br>
+              • 產出拆解建議報告
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="green-line"></div>
+    </div>
+
+    <!-- ==================== A2: 操作步驟 ==================== -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">🔄</div>
+        <h2>操作步驟</h2>
+      </div>
+      <div class="card-body">
+        <div class="flow-section">
+          <p class="flow-title">完整作業流程</p>
+          <div class="flow-container">
+            <div class="flow-step">
+              <div class="flow-number">1</div>
+              <div class="flow-icon">🚗</div>
+              <div class="flow-label">掃描車牌</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-number">2</div>
+              <div class="flow-icon">📸</div>
+              <div class="flow-label">拍攝照片</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-number">3</div>
+              <div class="flow-icon">☁️</div>
+              <div class="flow-label">上傳雲端</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-number">4</div>
+              <div class="flow-icon">🤖</div>
+              <div class="flow-label">AI 辨識</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-number">5</div>
+              <div class="flow-icon">✅</div>
+              <div class="flow-label">確認送出</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="color: #1e4a6e; margin: 24px 0 16px; font-size: 16px;">步驟詳解</h3>
+
+        <div class="step-detail">
+          <div class="step-number-box">1</div>
+          <div class="step-content">
+            <h4>掃描車牌</h4>
+            <p>
+              開啟 APP 後，點擊「新增車輛」按鈕，將鏡頭對準車牌。
+              系統會自動辨識車牌號碼，確認無誤後按「確定」。
+              若辨識錯誤，可點擊車牌欄位手動修改。
+            </p>
+          </div>
+        </div>
+
+        <div class="step-detail">
+          <div class="step-number-box">2</div>
+          <div class="step-content">
+            <h4>拍攝照片</h4>
+            <p>
+              依照畫面指示，依序拍攝 <code>6 個角度</code> 的照片：
+              前方、後方、左側、右側、車頂、引擎室。
+              每張照片需對焦清晰，光線充足。拍攝完成會顯示綠色勾勾。
+            </p>
+          </div>
+        </div>
+
+        <div class="step-detail">
+          <div class="step-number-box">3</div>
+          <div class="step-content">
+            <h4>上傳雲端</h4>
+            <p>
+              6 張照片拍攝完成後，系統會自動上傳。
+              上傳進度會顯示在畫面下方。請確保網路連線穩定，
+              若上傳失敗可點擊「重新上傳」。
+            </p>
+          </div>
+        </div>
+
+        <div class="step-detail">
+          <div class="step-number-box">4</div>
+          <div class="step-content">
+            <h4>AI 辨識</h4>
+            <p>
+              上傳完成後，AI 會自動分析照片並標記可回收零件。
+              辨識結果會以框線顯示在照片上，並列出零件清單。
+              此步驟約需 <code>30 秒</code>。
+            </p>
+          </div>
+        </div>
+
+        <div class="step-detail">
+          <div class="step-number-box">5</div>
+          <div class="step-content">
+            <h4>確認送出</h4>
+            <p>
+              檢查 AI 辨識結果，若有錯誤可手動修正。
+              確認無誤後點擊「送出」，系統會產生拆解建議報告。
+              報告可在「歷史紀錄」中查看。
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="green-line"></div>
+    </div>
+
+    <!-- ==================== A3: 操作範例 ==================== -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">🖼️</div>
+        <h2>操作範例</h2>
+      </div>
+      <div class="card-body">
+        <div class="screenshot-box">
+          <div class="screenshot-placeholder">
+            [ 此處放置 APP 主畫面截圖 ]
+          </div>
+          <p class="screenshot-caption">圖 1：APP 主畫面，點擊「新增車輛」開始作業</p>
+        </div>
+
+        <div class="screenshot-box">
+          <div class="screenshot-placeholder">
+            [ 此處放置拍照介面截圖 ]
+          </div>
+          <p class="screenshot-caption">圖 2：拍照介面，6 個角度依序拍攝</p>
+        </div>
+
+        <div class="screenshot-box">
+          <div class="screenshot-placeholder">
+            [ 此處放置 AI 辨識結果截圖 ]
+          </div>
+          <p class="screenshot-caption">圖 3：AI 辨識結果，可回收零件以綠框標示</p>
+        </div>
+      </div>
+      <div class="green-line"></div>
+    </div>
+
+    <!-- ==================== A4: 注意事項 ==================== -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">⚠️</div>
+        <h2>注意事項</h2>
+      </div>
+      <div class="card-body">
+        <ul class="notice-list">
+          <li class="danger">
+            <span class="notice-icon">🚫</span>
+            <div class="notice-content">
+              <div class="notice-title">禁止在雨天室外拍攝</div>
+              <div class="notice-desc">水滴會影響 AI 辨識準確度，請移至有遮蔽處或等待天氣好轉</div>
+            </div>
+          </li>
+          <li class="warning">
+            <span class="notice-icon">⚡</span>
+            <div class="notice-content">
+              <div class="notice-title">確保手機電量充足</div>
+              <div class="notice-desc">拍攝過程約需 10-15 分鐘，建議電量維持在 30% 以上</div>
+            </div>
+          </li>
+          <li class="warning">
+            <span class="notice-icon">📶</span>
+            <div class="notice-content">
+              <div class="notice-title">保持網路連線</div>
+              <div class="notice-desc">上傳需要穩定的 WiFi 或 4G 網路，建議在訊號良好處操作</div>
+            </div>
+          </li>
+          <li class="tip">
+            <span class="notice-icon">💡</span>
+            <div class="notice-content">
+              <div class="notice-title">善用補光功能</div>
+              <div class="notice-desc">引擎室等暗處拍攝時，可開啟手機閃光燈或使用工作燈補光</div>
+            </div>
+          </li>
+          <li class="tip">
+            <span class="notice-icon">🔄</span>
+            <div class="notice-content">
+              <div class="notice-title">重拍功能</div>
+              <div class="notice-desc">若照片模糊或角度不對，可點擊該照片重新拍攝，不需從頭開始</div>
+            </div>
+          </li>
+        </ul>
+
+        <h3 style="color: #1e4a6e; margin: 24px 0 16px; font-size: 16px;">快捷鍵（平板版）</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>快捷鍵</th>
+              <th>功能</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><kbd>Space</kbd></td>
+              <td>拍照</td>
+            </tr>
+            <tr>
+              <td><kbd>←</kbd> <kbd>→</kbd></td>
+              <td>切換拍攝角度</td>
+            </tr>
+            <tr>
+              <td><kbd>Enter</kbd></td>
+              <td>確認 / 下一步</td>
+            </tr>
+            <tr>
+              <td><kbd>Esc</kbd></td>
+              <td>取消 / 返回</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="green-line"></div>
+    </div>
+
+    <p class="footer">大豐環保 © 2026 | 廢車拍照系統操作手冊 v1.0</p>
+  </div>
+</body>
+</html>
